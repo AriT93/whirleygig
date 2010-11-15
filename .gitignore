@@ -1,0 +1,8 @@
+config.yml
+users.db
+xmptmp*
+*~
+.#*
+#*
+Capfile
+config/deploy.rb

@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+          "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>Streamer</title>
+    <script type="text/javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+      var emission_list = $("#emissions");
+      function load_emissions(){
+        $.getJSON("/stream", function(emissions){
+          $.each(emissions, function(){
+           $("<li>").html(this.text).prependTo(emission_list);
+          });
+          load_emissions();
+        });
+      }
+      setTimeout(load_emissions, 1000);
+    });
+    </script>
+
+  </head>
+<body>
+  <ul id="emissions">
+
+  </ul>
+</body>
+</html>
