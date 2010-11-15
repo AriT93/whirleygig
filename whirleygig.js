@@ -9,9 +9,6 @@ var sys = require('sys'),
 
 var simple_event = new event.EventEmitter();
 
-
-
-
 function pushData(){
     var data = "[{\"text\" : \"wibble\"},{\"text\": \"wabble\"}]";
     simple_event.emit("emission",data);
@@ -31,7 +28,7 @@ var listener = simple_event.addListener("emission",handleData);
 var server = net.createServer(function(socket){
     socket.setEncoding("utf8");
     socket.addListener("connect",function(){
-        socket.write("hello\r\n")
+        socket.write("hello\r\n");
     });
 
     socket.addListener("data", function(data){
@@ -39,18 +36,18 @@ var server = net.createServer(function(socket){
     });
 
     socket.addListener("end",function(){
-        socket.send("goodbye\r\n");
+        socket.write("goodbye\r\n");
         socket.end();
     });
 });
 
-server.listen(7000,"localhost");
+server.listen(8000,"127.0.0.1");
 
 http.createServer(function(request, response){
     var uri = url.parse(request.url).pathname;
     if(uri === "/stream"){
         var listener = simple_event.addListener("emission",function(emitted){
-            response.writeHeader(200, {"Content-Type":"text/plain"});
+            response.writeHead(200, {"Content-Type":"text/plain"});
             response.write(emitted);
             response.end();
 
@@ -58,7 +55,7 @@ http.createServer(function(request, response){
         });
 
         var timeout = setTimeout(function(){
-            response.writeHeader(200, {"Content-Type": "text/plain"});
+            response.writeHead(200, {"Content-Type": "text/plain"});
             response.write(JSON.stringify([]));
             response.end();
         },10000);
@@ -68,7 +65,7 @@ http.createServer(function(request, response){
           var filename = path.join(process.cwd(), uri);
           path.exists(filename, function(exists){
               if(!exists){
-                  response.writeHeader(404, {"Content-Type": "text/plain"});
+                  response.writeHead(404, {"Content-Type": "text/plain"});
                   response.write("404 Not Found");
                   response.end();
                   return;
@@ -76,13 +73,13 @@ http.createServer(function(request, response){
 
               fs.readFile(filename, "binary", function(err, file){
                   if(err){
-                      response.writeHeader(500, {"Content-Type":"text/plan"});
+                      response.writeHead(500, {"Content-Type":"text/plan"});
                       response.write(err + "\n");
                       response.end();
                       return;
                   }
 
-                  response.writeHeader(200);
+                  response.writeHead(200);
                   response.write(file,"binary");
                   response.end();
               });
