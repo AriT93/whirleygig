@@ -36,10 +36,16 @@ var server = net.createServer(function(socket){
 
     socket.addListener("data", function(data){
         simple_event.emit("emission", data);
+        var retval = "";
+        var p = JSON.parse(data);
+        p.forEach(function(p){
+            retval += p.text + "\r\n";
+        });
+        socket.write(retval);
     });
 
     socket.addListener("end",function(){
-        socket.send("goodbye\r\n");
+        socket.write("goodbye\r\n");
         socket.end();
     });
 });
