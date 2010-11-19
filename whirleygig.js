@@ -1,17 +1,26 @@
+require.paths.unshift('lib');
 var sys = require('sys'),
     http = require('http'),
     fs = require('fs'),
     path = require('path'),
     event = require('events'),
     url  = require('url'),
-    net = require('net');
+    net = require('net'),
+    message = require('Message');
 
 
 var simple_event = new event.EventEmitter();
 
 function pushData(){
-    var data = "[{\"text\" : \"wibble\"},{\"text\": \"wabble\"}]";
-    simple_event.emit("emission",data);
+    var data = new Array();
+    //"[{\"text\" : \"wibble\"},{\"text\": \"wabble\"}]";
+    var m = new message.Message();
+    m.text = "wibbler";
+    data.push(m);
+    m = new message.Message();
+    m.text = "wobbler";
+    data.push(m);
+    simple_event.emit("emission",JSON.stringify(data));
 }
 
 setInterval(pushData, 5000);
