@@ -23,12 +23,13 @@ function pushData(){
     simple_event.emit("emission",JSON.stringify(data));
 }
 
-setInterval(pushData, 5000);
+//setInterval(pushData, 5000);
 
 function handleData(data){
-    var p = JSON.parse(data);
-    p.forEach(function(p){
-        console.log(p.text);
+    var mArr = JSON.parse(data);
+    mArr.forEach(function(m){
+//        m.save();
+        console.log(m);
     });
 }
 
@@ -57,7 +58,7 @@ http.createServer(function(request, response){
     if(uri === "/stream"){
         var listener = simple_event.addListener("emission",function(emitted){
             response.writeHead(200, {"Content-Type":"text/plain"});
-            response.write(emitted);
+            response.write(JSON.stringify(emitted));
             response.end();
 
             clearTimeout(timeout);

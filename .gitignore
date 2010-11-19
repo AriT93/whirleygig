@@ -6,3 +6,4 @@ xmptmp*
 #*
 Capfile
 config/deploy.rb
+test.*
