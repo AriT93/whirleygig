@@ -27,7 +27,7 @@ function pushData(){
 function handleData(data){
     var mArr = JSON.parse(data);
     mArr.forEach(function(m){
-        //m.save();
+//        m.save();
         console.log(m);
     });
 }
