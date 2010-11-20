@@ -6,18 +6,19 @@ var sys = require('sys'),
     event = require('events'),
     url  = require('url'),
     net = require('net'),
-    message = require('message');
+    message = require('Message');
 
 
 var simple_event = new event.EventEmitter();
 
 function pushData(){
     var data = new Array();
+    //"[{\"text\" : \"wibble\"},{\"text\": \"wabble\"}]";
     var m = new message.Message();
-    m.text = "some Value";
+    m.text = "wibbler";
     data.push(m);
     m = new message.Message();
-    m.text = "some other value";
+    m.text = "wobbler";
     data.push(m);
     simple_event.emit("emission",JSON.stringify(data));
 }
@@ -27,7 +28,7 @@ function pushData(){
 function handleData(data){
     var mArr = JSON.parse(data);
     mArr.forEach(function(m){
-        //m.save();
+//        m.save();
         console.log(m);
     });
 }
