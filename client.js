@@ -24,8 +24,7 @@ function pushDatatoStream(){
     m = new message.Message();
     m.text = "data";
     data.push(m);
-//    console.log(data);
-//    console.log(typeof m);
+    m.save()
     stream.write(JSON.stringify(data));
     if(counter > 10){
       clearInterval(pushDatatoStream);

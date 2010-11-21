@@ -63,7 +63,7 @@ http.createServer(function(request, response){
     if(uri === "/stream"){
         var listener = simple_event.addListener("emission",function(emitted){
             response.writeHead(200, {"Content-Type":"text/plain"});
-            response.write(JSON.stringify(emitted));
+            response.write(emitted);
             response.end();
 
             clearTimeout(timeout);
