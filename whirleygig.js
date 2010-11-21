@@ -13,7 +13,6 @@ var simple_event = new event.EventEmitter();
 
 function pushData(){
     var data = new Array();
-    //"[{\"text\" : \"wibble\"},{\"text\": \"wabble\"}]";
     var m = new message.Message();
     m.text = "wibbler";
     data.push(m);
@@ -52,8 +51,8 @@ var server = net.createServer(function(socket){
     });
 
     socket.addListener("end",function(){
-        socket.write("goodbye\r\n");
-        socket.end();
+//        socket.write("goodbye\r\n");
+//        socket.end();
     });
 });
 
