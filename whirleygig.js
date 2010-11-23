@@ -1,4 +1,5 @@
 require.paths.unshift('lib');
+
 var sys = require('sys'),
     http = require('http'),
     fs = require('fs'),
@@ -47,12 +48,22 @@ var server = net.createServer(function(socket){
         p.forEach(function(p){
             retval += p.text + "\r\n";
         });
-        socket.write(retval);
+        if(socket.readyState == 'open'){
+            console.log(socket.readyState);
+            socket.write(retval);
+        }
     });
 
     socket.addListener("end",function(){
-//        socket.write("goodbye\r\n");
-//        socket.end();
+            console.log(socket.readyState);
+            socket.write("goodbye\r\n");
+            socket.end();
+    });
+    socket.addListener("close", function(had_error){
+        console.log("closed : " + had_error);
+    });
+    socket.addListener("error",function(exception){
+        console.log(exception);
     });
 });
 
