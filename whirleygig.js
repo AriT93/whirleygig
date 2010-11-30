@@ -1,5 +1,4 @@
 require.paths.unshift('lib');
-
 var sys = require('sys'),
     http = require('http'),
     fs = require('fs'),
@@ -28,8 +27,6 @@ function pushData(){
 function handleData(data){
     var mArr = JSON.parse(data);
     mArr.forEach(function(m){
-//        m.save();
-
         console.log(m);
     });
 }
@@ -43,12 +40,14 @@ var server = net.createServer(function(socket){
     });
 
     socket.addListener("data", function(data){
+        console.log(data);
         simple_event.emit("emission", data);
         var retval = "";
         var p = JSON.parse(data);
         p.forEach(function(p){
             retval += p.text + "\r\n";
         });
+
         if(socket.readyState == 'open'){
             console.log(socket.readyState);
             socket.write(retval);
@@ -63,12 +62,14 @@ var server = net.createServer(function(socket){
     socket.addListener("close", function(had_error){
         console.log("closed : " + had_error);
     });
+
     socket.addListener("error",function(exception){
-        console.log(exception);
+        console.log("error: " + exception);
     });
 });
 
 server.listen(8000,"127.0.0.1");
+
 
 http.createServer(function(request, response){
     var uri = url.parse(request.url).pathname;
