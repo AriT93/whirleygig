@@ -11,19 +11,33 @@ var sys = require('sys'),
 
 
 var simple_event = new event.EventEmitter();
+var simple_socket_event = new event.EventEmitter();
+
+var socket_listener = simple_socket_event.addListener("socket_transmission",function(data){
+    wSocket.broadcast({announcement: [data]});
+});
 
 function pushData(){
     var data = new Array();
     var m = new message.Message();
+    var mlistener = m.addListener('update',function(data){
+        if(! m.id){
+            m.id= data;
+        }
+    });
     m.text = "wibbler";
+    m.save();
     data.push(m);
     m = new message.Message();
+    m.id = '';
     m.text = "wobbler";
+    m.save();
     data.push(m);
-    simple_event.emit("emission",JSON.stringify(data));
+    //    simple_event.emit("emission",JSON.stringify(data));
+    simple_socket_event.emit("socket_transmission", JSON.stringify(data));
 }
 
-//setInterval(pushData, 5000);
+setInterval(pushData, 5000);
 
 function handleData(data){
     var mArr = JSON.parse(data);
@@ -122,6 +136,7 @@ var wSocket = io.listen(httpServer),
     buffer = [];
 
 wSocket.on('connection', function(client){
+
     client.send({buffer: buffer});
     client.broadcast({announcement: client.sessionId + ' in the house'});
     console.log("wibble");
