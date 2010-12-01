@@ -3,25 +3,14 @@
 <html>
   <head>
     <title>Streamer</title>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript"
             src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function() {
-      var emission_list = $("#emissions");
-      function load_emissions(){
-        $.getJSON("/stream", function(emissions){
-          $.each(emissions, function(){
-           $("<li>").html(this.text + " : " + this.id).prependTo(emission_list);
-          });
-          load_emissions();
-        });
-      }
-      setTimeout(load_emissions, 1000);
-    });
-    </script>
+    <script type="text/javascript" src="loclient.js"></script>
 
   </head>
 <body>
+  <div style="float: right;" id="chat"></div>
   <ul id="emissions">
 
   </ul>

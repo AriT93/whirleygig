@@ -6,6 +6,7 @@ var sys = require('sys'),
     event = require('events'),
     url  = require('url'),
     net = require('net'),
+    io = require('socket.io'),
     message = require('Message');
 
 
@@ -40,7 +41,7 @@ var server = net.createServer(function(socket){
     });
 
     socket.addListener("data", function(data){
-        console.log(data);
+        //        console.log(data);
         simple_event.emit("emission", data);
         var retval = "";
         var p = JSON.parse(data);
@@ -55,9 +56,9 @@ var server = net.createServer(function(socket){
     });
 
     socket.addListener("end",function(){
-            console.log(socket.readyState);
-            socket.write("goodbye\r\n");
-            socket.end();
+        console.log(socket.readyState);
+        socket.write("goodbye\r\n");
+        socket.end();
     });
     socket.addListener("close", function(had_error){
         console.log("closed : " + had_error);
@@ -71,7 +72,7 @@ var server = net.createServer(function(socket){
 server.listen(8000,"127.0.0.1");
 
 
-http.createServer(function(request, response){
+var httpServer = http.createServer(function(request, response){
     var uri = url.parse(request.url).pathname;
     if(uri === "/stream"){
         var listener = simple_event.addListener("emission",function(emitted){
@@ -89,28 +90,58 @@ http.createServer(function(request, response){
         },10000);
     }
     else
-      {
-          var filename = path.join(process.cwd(), uri);
-          path.exists(filename, function(exists){
-              if(!exists){
-                  response.writeHead(404, {"Content-Type": "text/plain"});
-                  response.write("404 Not Found");
-                  response.end();
-                  return;
-              }
+    {
+        var filename = path.join(process.cwd(), uri);
+        path.exists(filename, function(exists){
+            if(!exists){
+                response.writeHead(404, {"Content-Type": "text/plain"});
+                response.write("404 Not Found");
+                response.end();
+                return;
+            }
 
-              fs.readFile(filename, "binary", function(err, file){
-                  if(err){
-                      response.writeHead(500, {"Content-Type":"text/plan"});
-                      response.write(err + "\n");
-                      response.end();
-                      return;
-                  }
+            fs.readFile(filename, "binary", function(err, file){
+                if(err){
+                    response.writeHead(500, {"Content-Type":"text/plan"});
+                    response.write(err + "\n");
+                    response.end();
+                    return;
+                }
 
-                  response.writeHead(200);
-                  response.write(file,"binary");
-                  response.end();
-              });
-          });
-      }
-}).listen(8992);
+                response.writeHead(200);
+                response.write(file,"binary");
+                response.end();
+            });
+        });
+    }
+});
+
+httpServer.listen(8992);
+
+var wSocket = io.listen(httpServer),
+    buffer = [];
+
+wSocket.on('connection', function(client){
+    client.send({buffer: buffer});
+    client.broadcast({announcement: client.sessionId + ' in the house'});
+    console.log("wibble");
+    client.on('message', function(data){
+        var msg = {
+            message: [client.sessionId, data]
+        };
+        buffer.push(msg);
+        if(buffer.length > 5) buffer.shift();
+        if('task' in data){
+            switch(data.task[0]){
+            case 'data':
+                msg = {
+                    result: ["valuable data", "and more data"]
+                };
+                client.send(msg);
+                break;
+            default:
+                client.broadcast({announcement: client.sessionId + 'send a bad task everyone point and laugh'});
+            }
+        }
+    });
+});

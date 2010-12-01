@@ -43,11 +43,11 @@ function pushDatatoStream(){
     m2.save();
     data.push(m2);
     stream.write(JSON.stringify(data));
-    if(counter > 10){
-    clearInterval(pdinterval);
-    stream.end();
+    // if(counter > 10){
+    // clearInterval(pdinterval);
+    // stream.end();
     //process.exit();
-    }
+//    }
     // console.log(pdinterval);
     // clearInterval(pdinterval);
     // process.exit();
