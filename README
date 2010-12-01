@@ -12,3 +12,10 @@ then open your browser to http://localhost:8992/test.html
 additionally you can telnet localhost 8000   and send a line like this:
 
 [{"text":"data to see on the page"},{"text":"more data"}]
+
+
+for the sqlite driver in vendor dir you will need to get the source for
+node-sqlite from grumdrig and recompile for your system.
+
+
+http://code.google.com/p/node-sqlite/
